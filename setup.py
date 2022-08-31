@@ -48,10 +48,11 @@ setup(
       packages=find_packages(),
       install_requires=[
         'attrs==18.2.0',
-        'pendulum==1.2.0',
-        'singer-python==5.0.4',
-        'backoff==1.3.2',
-        'psycopg2==2.7.3.2',
+        'pendulum>=1.2.0<2.0.0',
+        'singer-python>=5.12.2<6.0.0',
+        'backoff>=1.3.2<2.0.0',
+        'psycopg2==2.9.3',
+        'psycopg2-binary==2.9.3',
       ],
       setup_requires=[
         'pytest-runner>=2.11,<3.0a',
