@@ -87,9 +87,9 @@ def discover_catalog(conn, db_schema):
         c.is_nullable
         FROM INFORMATION_SCHEMA.Tables t
         JOIN INFORMATION_SCHEMA.Columns c ON c.table_name = t.table_name
-        WHERE t.table_schema = '{}'
+        WHERE t.table_schema = '{db_schema}' AND c.table_schema='{db_schema}'
         ORDER BY c.table_name, c.ordinal_position
-        """.format(db_schema))
+        """.format(db_schema=db_schema))
 
     pk_specs = select_all(
         conn,
@@ -276,9 +276,14 @@ def get_stream_version(tap_stream_id, state):
 
 def row_to_record(catalog_entry, version, row, columns, time_extracted):
     row_to_persist = ()
+
     for idx, elem in enumerate(row):
-        if isinstance(elem, datetime.date):
-            elem = elem.isoformat('T') + 'Z'
+        if isinstance(elem, datetime.datetime):
+            # elem = elem.isoformat('T') + 'Z'
+            elem = elem.isoformat('T')
+        elif isinstance(elem, datetime.date):
+            elem = elem.isoformat()
+
         row_to_persist += (elem,)
     return singer.RecordMessage(
         stream=catalog_entry.stream,
